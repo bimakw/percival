@@ -1,0 +1,148 @@
+import axios from 'axios';
+import type {
+  ApiResponse,
+  AuthResponse,
+  User,
+  Project,
+  Task,
+  Team,
+  TeamMember,
+  Milestone
+} from '@/types';
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/v1';
+
+const api = axios.create({
+  baseURL: API_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+// Add token to requests
+api.interceptors.request.use((config) => {
+  if (typeof window !== 'undefined') {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+  }
+  return config;
+});
+
+// Handle 401 responses
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.href = '/login';
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
+// Auth
+export const authApi = {
+  login: async (email: string, password: string) => {
+    const { data } = await api.post<ApiResponse<AuthResponse>>('/auth/login', { email, password });
+    return data;
+  },
+  register: async (email: string, password: string, name: string) => {
+    const { data } = await api.post<ApiResponse<User>>('/auth/register', { email, password, name });
+    return data;
+  },
+};
+
+// Projects
+export const projectsApi = {
+  list: async () => {
+    const { data } = await api.get<ApiResponse<Project[]>>('/projects');
+    return data;
+  },
+  get: async (id: string) => {
+    const { data } = await api.get<ApiResponse<Project>>(`/projects/${id}`);
+    return data;
+  },
+  create: async (project: Partial<Project>) => {
+    const { data } = await api.post<ApiResponse<Project>>('/projects', project);
+    return data;
+  },
+  update: async (id: string, project: Partial<Project>) => {
+    const { data } = await api.put<ApiResponse<Project>>(`/projects/${id}`, project);
+    return data;
+  },
+  delete: async (id: string) => {
+    const { data } = await api.delete<ApiResponse<void>>(`/projects/${id}`);
+    return data;
+  },
+  getTasks: async (id: string) => {
+    const { data } = await api.get<ApiResponse<Task[]>>(`/projects/${id}/tasks`);
+    return data;
+  },
+  getMilestones: async (id: string) => {
+    const { data } = await api.get<ApiResponse<Milestone[]>>(`/projects/${id}/milestones`);
+    return data;
+  },
+};
+
+// Tasks
+export const tasksApi = {
+  list: async () => {
+    const { data } = await api.get<ApiResponse<Task[]>>('/tasks');
+    return data;
+  },
+  get: async (id: string) => {
+    const { data } = await api.get<ApiResponse<Task>>(`/tasks/${id}`);
+    return data;
+  },
+  create: async (task: Partial<Task>) => {
+    const { data } = await api.post<ApiResponse<Task>>('/tasks', task);
+    return data;
+  },
+  update: async (id: string, task: Partial<Task>) => {
+    const { data } = await api.put<ApiResponse<Task>>(`/tasks/${id}`, task);
+    return data;
+  },
+  delete: async (id: string) => {
+    const { data } = await api.delete<ApiResponse<void>>(`/tasks/${id}`);
+    return data;
+  },
+};
+
+// Teams
+export const teamsApi = {
+  list: async () => {
+    const { data } = await api.get<ApiResponse<Team[]>>('/teams');
+    return data;
+  },
+  get: async (id: string) => {
+    const { data } = await api.get<ApiResponse<Team>>(`/teams/${id}`);
+    return data;
+  },
+  create: async (team: Partial<Team>) => {
+    const { data } = await api.post<ApiResponse<Team>>('/teams', team);
+    return data;
+  },
+  update: async (id: string, team: Partial<Team>) => {
+    const { data } = await api.put<ApiResponse<Team>>(`/teams/${id}`, team);
+    return data;
+  },
+  delete: async (id: string) => {
+    const { data } = await api.delete<ApiResponse<void>>(`/teams/${id}`);
+    return data;
+  },
+  getMembers: async (id: string) => {
+    const { data } = await api.get<ApiResponse<TeamMember[]>>(`/teams/${id}/members`);
+    return data;
+  },
+  addMember: async (teamId: string, userId: string, role?: string) => {
+    const { data } = await api.post<ApiResponse<TeamMember>>(`/teams/${teamId}/members`, { user_id: userId, role });
+    return data;
+  },
+};
+
+export default api;
