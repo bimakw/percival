@@ -10,6 +10,7 @@ import {
   Settings,
   LogOut,
   Columns3,
+  Activity,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/store/auth';
@@ -20,6 +21,7 @@ const navigation = [
   { name: 'Projects', href: '/projects', icon: FolderKanban },
   { name: 'Tasks', href: '/tasks', icon: CheckSquare },
   { name: 'Teams', href: '/teams', icon: Users },
+  { name: 'Activity', href: '/activity', icon: Activity },
   { name: 'Settings', href: '/settings', icon: Settings },
 ];
 

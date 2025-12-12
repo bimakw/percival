@@ -85,6 +85,31 @@ export interface Milestone {
   updated_at: string;
 }
 
+// Activity Log
+export type ActivityAction =
+  | 'created'
+  | 'updated'
+  | 'deleted'
+  | 'status_changed'
+  | 'assigned'
+  | 'commented';
+
+export type EntityType = 'project' | 'task' | 'team' | 'milestone' | 'comment';
+
+export interface ActivityLog {
+  id: string;
+  user_id?: string;
+  user_name?: string;
+  project_id?: string;
+  project_name?: string;
+  action: ActivityAction;
+  entity_type: EntityType;
+  entity_id: string;
+  entity_name?: string;
+  details?: Record<string, unknown>;
+  created_at: string;
+}
+
 // API Response
 export interface ApiResponse<T> {
   success: boolean;
