@@ -7,7 +7,8 @@ import type {
   Task,
   Team,
   TeamMember,
-  Milestone
+  Milestone,
+  ActivityLog,
 } from '@/types';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/v1';
@@ -141,6 +142,20 @@ export const teamsApi = {
   },
   addMember: async (teamId: string, userId: string, role?: string) => {
     const { data } = await api.post<ApiResponse<TeamMember>>(`/teams/${teamId}/members`, { user_id: userId, role });
+    return data;
+  },
+};
+
+// Activity Logs
+export const activityApi = {
+  list: async (params?: { project_id?: string; limit?: number }) => {
+    const { data } = await api.get<ApiResponse<ActivityLog[]>>('/activities', { params });
+    return data;
+  },
+  getByProject: async (projectId: string, limit?: number) => {
+    const { data } = await api.get<ApiResponse<ActivityLog[]>>(`/projects/${projectId}/activities`, {
+      params: { limit },
+    });
     return data;
   },
 };
