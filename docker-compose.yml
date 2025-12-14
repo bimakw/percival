@@ -2,11 +2,11 @@ services:
   # PostgreSQL Database
   db:
     image: postgres:16-alpine
-    container_name: pmo-db
+    container_name: percival-db
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: pmo_db
+      POSTGRES_DB: percival_db
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
@@ -24,9 +24,9 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: pmo-backend
+    container_name: percival-backend
     environment:
-      DATABASE_URL: postgres://postgres:postgres@db:5432/pmo_db
+      DATABASE_URL: postgres://postgres:postgres@db:5432/percival_db
       SERVER_ADDR: 0.0.0.0:8080
       JWT_SECRET: change-this-secret-in-production
       JWT_EXPIRATION: 86400
@@ -42,7 +42,7 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: pmo-frontend
+    container_name: percival-frontend
     environment:
       NEXT_PUBLIC_API_URL: http://localhost:8080/api/v1
     ports:

@@ -1,8 +1,8 @@
 [package]
-name = "pmo-backend"
+name = "percival-backend"
 version = "0.1.0"
 edition = "2021"
-description = "PMO (Project Management Office) Backend API"
+description = "Percival - Project Management Office Backend API"
 authors = ["okinn"]
 
 [dependencies]
