@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/store/auth';
+import { NotificationBell } from '@/components/ui/notification-bell';
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
@@ -34,10 +35,13 @@ export function Sidebar() {
   return (
     <aside className="fixed inset-y-0 left-0 z-50 w-64 bg-gray-900 text-white">
       <div className="flex h-full flex-col">
-        {/* Logo */}
-        <div className="flex h-16 items-center px-6 border-b border-gray-800">
-          <FolderKanban className="h-8 w-8 text-blue-500" />
-          <span className="ml-3 text-xl font-bold">PMO</span>
+        {/* Logo and Notifications */}
+        <div className="flex h-16 items-center justify-between px-6 border-b border-gray-800">
+          <div className="flex items-center">
+            <FolderKanban className="h-8 w-8 text-blue-500" />
+            <span className="ml-3 text-xl font-bold">PMO</span>
+          </div>
+          <NotificationBell />
         </div>
 
         {/* Navigation */}

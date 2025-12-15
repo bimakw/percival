@@ -10,6 +10,7 @@ import type {
   Milestone,
   ActivityLog,
   TimeLog,
+  Notification,
 } from '@/types';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/v1';
@@ -181,6 +182,36 @@ export const timeLogsApi = {
   },
   delete: async (id: string) => {
     const { data } = await api.delete<ApiResponse<void>>(`/time-logs/${id}`);
+    return data;
+  },
+};
+
+// Notifications
+export const notificationsApi = {
+  list: async (limit?: number) => {
+    const { data } = await api.get<ApiResponse<Notification[]>>('/notifications', {
+      params: limit ? { limit } : undefined,
+    });
+    return data;
+  },
+  getUnread: async () => {
+    const { data } = await api.get<ApiResponse<Notification[]>>('/notifications/unread');
+    return data;
+  },
+  getUnreadCount: async () => {
+    const { data } = await api.get<ApiResponse<{ count: number }>>('/notifications/unread/count');
+    return data;
+  },
+  markAsRead: async (id: string) => {
+    const { data } = await api.post<ApiResponse<void>>(`/notifications/${id}/read`);
+    return data;
+  },
+  markAllAsRead: async () => {
+    const { data } = await api.post<ApiResponse<void>>('/notifications/read-all');
+    return data;
+  },
+  delete: async (id: string) => {
+    const { data } = await api.delete<ApiResponse<void>>(`/notifications/${id}`);
     return data;
   },
 };

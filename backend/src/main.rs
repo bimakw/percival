@@ -14,13 +14,13 @@ mod infrastructure;
 mod presentation;
 mod shared;
 
-use application::services::{ActivityAppService, AuthAppService, ProjectAppService, TaskAppService, TeamAppService};
+use application::services::{ActivityAppService, AuthAppService, NotificationAppService, ProjectAppService, TaskAppService, TeamAppService};
 use infrastructure::{
     config::AppConfig,
     database,
-    persistence::{PgActivityLogRepository, PgProjectRepository, PgTaskRepository, PgTeamRepository, PgUserRepository},
+    persistence::{PgActivityLogRepository, PgNotificationRepository, PgProjectRepository, PgTaskRepository, PgTeamRepository, PgUserRepository},
 };
-use presentation::handlers::{activity_handler, auth_handler, project_handler, task_handler, team_handler};
+use presentation::handlers::{activity_handler, auth_handler, notification_handler, project_handler, task_handler, team_handler};
 use presentation::middleware::auth_middleware;
 
 #[tokio::main]
@@ -48,6 +48,7 @@ async fn main() {
     let task_repository = Arc::new(PgTaskRepository::new(pool.clone()));
     let team_repository = Arc::new(PgTeamRepository::new(pool.clone()));
     let activity_repository = Arc::new(PgActivityLogRepository::new(pool.clone()));
+    let notification_repository = Arc::new(PgNotificationRepository::new(pool.clone()));
 
     // Create application services
     let auth_service = Arc::new(AuthAppService::new(
@@ -59,6 +60,7 @@ async fn main() {
     let task_service = Arc::new(TaskAppService::new(task_repository));
     let team_service = Arc::new(TeamAppService::new(team_repository));
     let activity_service = Arc::new(ActivityAppService::new(activity_repository));
+    let notification_service = Arc::new(NotificationAppService::new(notification_repository));
 
     // CORS configuration - restrict to allowed origins
     let cors = CorsLayer::new()
@@ -84,7 +86,7 @@ async fn main() {
         .route("/health", get(health_check))
         .nest(
             "/api/v1",
-            api_routes(auth_service, project_service, task_service, team_service, activity_service),
+            api_routes(auth_service, project_service, task_service, team_service, activity_service, notification_service),
         )
         .layer(cors)
         .layer(TraceLayer::new_for_http());
@@ -108,6 +110,7 @@ fn api_routes(
     task_service: Arc<TaskAppService>,
     team_service: Arc<TeamAppService>,
     activity_service: Arc<ActivityAppService>,
+    notification_service: Arc<NotificationAppService>,
 ) -> Router {
     // Public auth routes (no authentication required)
     let public_auth_routes = Router::new()
@@ -161,10 +164,22 @@ fn api_routes(
         .layer(middleware::from_fn(auth_middleware))
         .with_state(activity_service);
 
+    // Protected notification routes
+    let notification_routes = Router::new()
+        .route("/notifications", get(notification_handler::list_notifications))
+        .route("/notifications/unread", get(notification_handler::get_unread_notifications))
+        .route("/notifications/unread/count", get(notification_handler::get_unread_count))
+        .route("/notifications/read-all", post(notification_handler::mark_all_as_read))
+        .route("/notifications/{id}/read", post(notification_handler::mark_as_read))
+        .route("/notifications/{id}", delete(notification_handler::delete_notification))
+        .layer(middleware::from_fn(auth_middleware))
+        .with_state(notification_service);
+
     Router::new()
         .merge(public_auth_routes)
         .merge(project_routes)
         .merge(task_routes)
         .merge(team_routes)
         .merge(activity_routes)
+        .merge(notification_routes)
 }
