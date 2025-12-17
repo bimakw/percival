@@ -11,6 +11,8 @@ A modern, full-stack Project Management Office application built with Next.js, R
 [![TypeScript](https://img.shields.io/badge/TypeScript-61.9%25-3178c6)](https://github.com/bimakw/percival)
 [![Rust](https://img.shields.io/badge/Rust-34.0%25-dea584)](https://github.com/bimakw/percival)
 
+**[Live Demo](https://percival-pmo.netlify.app)**
+
 </div>
 
 ---
