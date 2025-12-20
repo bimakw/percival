@@ -15,6 +15,7 @@ import {
   Tags,
   Bell,
   CalendarDays,
+  BarChart3,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/store/auth';
@@ -27,6 +28,7 @@ const navigation = [
   { name: 'Tasks', href: '/tasks', icon: CheckSquare },
   { name: 'Tags', href: '/tags', icon: Tags },
   { name: 'Timesheet', href: '/timesheet', icon: Clock },
+  { name: 'Reports', href: '/reports', icon: BarChart3 },
   { name: 'Teams', href: '/teams', icon: Users },
   { name: 'Activity', href: '/activity', icon: Activity },
   { name: 'Notifications', href: '/notifications', icon: Bell },
