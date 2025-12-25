@@ -172,6 +172,36 @@ psql -d percival_db -f database/seed.sql
 
 ---
 
+## 🧪 Testing
+
+### Backend (Rust)
+
+```bash
+cd backend
+cargo test
+```
+
+| Module | Tests |
+|--------|-------|
+| Email validation | 16 |
+| Auth service (password hashing) | 12 |
+| Domain enums | 30 |
+| Password validation | 6 |
+
+### Frontend (Next.js)
+
+```bash
+cd frontend
+npm run test:run
+```
+
+| Module | Tests |
+|--------|-------|
+| Utility functions | 37 |
+| Auth store | 17 |
+
+---
+
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
