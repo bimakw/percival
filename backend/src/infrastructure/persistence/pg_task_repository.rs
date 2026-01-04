@@ -159,7 +159,11 @@ impl TaskRepository for PgTaskRepository {
         Ok(result.is_some())
     }
 
-    async fn can_access_project(&self, project_id: Uuid, user_id: Uuid) -> Result<bool, DomainError> {
+    async fn can_access_project(
+        &self,
+        project_id: Uuid,
+        user_id: Uuid,
+    ) -> Result<bool, DomainError> {
         let result: Option<(i64,)> = sqlx::query_as(
             r#"
             SELECT 1 FROM projects p

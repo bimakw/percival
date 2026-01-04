@@ -101,7 +101,11 @@ impl TeamAppService {
         self.team_repository.add_member(&member).await
     }
 
-    pub async fn remove_team_member(&self, team_id: Uuid, user_id: Uuid) -> Result<(), DomainError> {
+    pub async fn remove_team_member(
+        &self,
+        team_id: Uuid,
+        user_id: Uuid,
+    ) -> Result<(), DomainError> {
         self.team_repository.remove_member(team_id, user_id).await
     }
 }

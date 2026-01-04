@@ -157,12 +157,10 @@ impl TagRepository for PgTagRepository {
     }
 
     async fn find_tasks_by_tag(&self, tag_id: Uuid) -> Result<Vec<Uuid>, DomainError> {
-        let rows: Vec<(Uuid,)> = sqlx::query_as(
-            "SELECT task_id FROM task_tags WHERE tag_id = $1",
-        )
-        .bind(tag_id)
-        .fetch_all(&self.pool)
-        .await?;
+        let rows: Vec<(Uuid,)> = sqlx::query_as("SELECT task_id FROM task_tags WHERE tag_id = $1")
+            .bind(tag_id)
+            .fetch_all(&self.pool)
+            .await?;
 
         Ok(rows.into_iter().map(|r| r.0).collect())
     }

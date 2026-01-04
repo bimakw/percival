@@ -15,8 +15,8 @@ use crate::shared::DomainError;
 
 const MAX_FILE_SIZE: i64 = 10 * 1024 * 1024; // 10MB
 const ALLOWED_EXTENSIONS: &[&str] = &[
-    "pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx", "txt", "csv", "zip", "rar", "7z",
-    "png", "jpg", "jpeg", "gif", "webp", "svg", "bmp",
+    "pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx", "txt", "csv", "zip", "rar", "7z", "png",
+    "jpg", "jpeg", "gif", "webp", "svg", "bmp",
 ];
 
 pub struct AttachmentAppService {
@@ -32,7 +32,10 @@ impl AttachmentAppService {
         }
     }
 
-    pub async fn get_task_attachments(&self, task_id: Uuid) -> Result<Vec<Attachment>, DomainError> {
+    pub async fn get_task_attachments(
+        &self,
+        task_id: Uuid,
+    ) -> Result<Vec<Attachment>, DomainError> {
         self.attachment_repository.find_by_task(task_id).await
     }
 
@@ -87,13 +90,13 @@ impl AttachmentAppService {
 
         // Write file to disk
         let file_path = task_dir.join(&filename);
-        let mut file = fs::File::create(&file_path).await.map_err(|e| {
-            DomainError::InternalError(format!("Failed to create file: {}", e))
-        })?;
+        let mut file = fs::File::create(&file_path)
+            .await
+            .map_err(|e| DomainError::InternalError(format!("Failed to create file: {}", e)))?;
 
-        file.write_all(&data).await.map_err(|e| {
-            DomainError::InternalError(format!("Failed to write file: {}", e))
-        })?;
+        file.write_all(&data)
+            .await
+            .map_err(|e| DomainError::InternalError(format!("Failed to write file: {}", e)))?;
 
         // Create attachment record
         let storage_path = format!("{}/{}", task_id, filename);
@@ -120,9 +123,9 @@ impl AttachmentAppService {
         // Delete file from disk
         let file_path = self.upload_dir.join(&attachment.storage_path);
         if file_path.exists() {
-            fs::remove_file(&file_path).await.map_err(|e| {
-                DomainError::InternalError(format!("Failed to delete file: {}", e))
-            })?;
+            fs::remove_file(&file_path)
+                .await
+                .map_err(|e| DomainError::InternalError(format!("Failed to delete file: {}", e)))?;
         }
 
         // Delete from database

@@ -16,4 +16,4 @@ pub use project_app_service::ProjectAppService;
 pub use tag_app_service::TagAppService;
 pub use task_app_service::TaskAppService;
 pub use team_app_service::TeamAppService;
-pub use time_log_app_service::{TimeLogAppService, CreateTimeLogDto, UpdateTimeLogDto};
+pub use time_log_app_service::{CreateTimeLogDto, TimeLogAppService, UpdateTimeLogDto};

@@ -181,13 +181,12 @@ impl ProjectRepository for PgProjectRepository {
     }
 
     async fn is_owner(&self, project_id: Uuid, user_id: Uuid) -> Result<bool, DomainError> {
-        let result: Option<(i64,)> = sqlx::query_as(
-            "SELECT 1 FROM projects WHERE id = $1 AND owner_id = $2 LIMIT 1",
-        )
-        .bind(project_id)
-        .bind(user_id)
-        .fetch_optional(&self.pool)
-        .await?;
+        let result: Option<(i64,)> =
+            sqlx::query_as("SELECT 1 FROM projects WHERE id = $1 AND owner_id = $2 LIMIT 1")
+                .bind(project_id)
+                .bind(user_id)
+                .fetch_optional(&self.pool)
+                .await?;
 
         Ok(result.is_some())
     }

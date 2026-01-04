@@ -34,7 +34,9 @@ pub async fn get_project(
     // Check access permission (admin can access all)
     if auth_user.role != UserRole::Admin {
         if !service.can_user_access(id, auth_user.id).await? {
-            return Err(DomainError::Forbidden("You don't have access to this project".into()));
+            return Err(DomainError::Forbidden(
+                "You don't have access to this project".into(),
+            ));
         }
     }
     let project = service.get_project(id).await?;
@@ -64,7 +66,9 @@ pub async fn update_project(
     // Only owner or admin can update project
     if auth_user.role != UserRole::Admin {
         if !service.is_owner(id, auth_user.id).await? {
-            return Err(DomainError::Forbidden("Only project owner can update this project".into()));
+            return Err(DomainError::Forbidden(
+                "Only project owner can update this project".into(),
+            ));
         }
     }
 
@@ -85,7 +89,9 @@ pub async fn delete_project(
     // Only owner or admin can delete project
     if auth_user.role != UserRole::Admin {
         if !service.is_owner(id, auth_user.id).await? {
-            return Err(DomainError::Forbidden("Only project owner can delete this project".into()));
+            return Err(DomainError::Forbidden(
+                "Only project owner can delete this project".into(),
+            ));
         }
     }
 
@@ -106,7 +112,9 @@ pub async fn get_project_tasks(
     // Check access permission (admin can access all)
     if auth_user.role != UserRole::Admin {
         if !service.can_user_access(id, auth_user.id).await? {
-            return Err(DomainError::Forbidden("You don't have access to this project".into()));
+            return Err(DomainError::Forbidden(
+                "You don't have access to this project".into(),
+            ));
         }
     }
     let tasks = service.get_project_tasks(id).await?;
@@ -121,7 +129,9 @@ pub async fn get_project_milestones(
     // Check access permission (admin can access all)
     if auth_user.role != UserRole::Admin {
         if !service.can_user_access(id, auth_user.id).await? {
-            return Err(DomainError::Forbidden("You don't have access to this project".into()));
+            return Err(DomainError::Forbidden(
+                "You don't have access to this project".into(),
+            ));
         }
     }
     let milestones = service.get_project_milestones(id).await?;

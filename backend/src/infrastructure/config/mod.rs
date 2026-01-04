@@ -20,7 +20,8 @@ impl AppConfig {
 
         Self {
             database_url: std::env::var("DATABASE_URL").expect("DATABASE_URL must be set"),
-            server_addr: std::env::var("SERVER_ADDR").unwrap_or_else(|_| "0.0.0.0:8080".to_string()),
+            server_addr: std::env::var("SERVER_ADDR")
+                .unwrap_or_else(|_| "0.0.0.0:8080".to_string()),
             jwt_secret: std::env::var("JWT_SECRET").expect("JWT_SECRET must be set"),
             jwt_expiration: std::env::var("JWT_EXPIRATION")
                 .unwrap_or_else(|_| "86400".to_string())

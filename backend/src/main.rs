@@ -14,13 +14,23 @@ mod infrastructure;
 mod presentation;
 mod shared;
 
-use application::services::{ActivityAppService, AttachmentAppService, AuthAppService, NotificationAppService, ProjectAppService, TagAppService, TaskAppService, TeamAppService, TimeLogAppService};
+use application::services::{
+    ActivityAppService, AttachmentAppService, AuthAppService, NotificationAppService,
+    ProjectAppService, TagAppService, TaskAppService, TeamAppService, TimeLogAppService,
+};
 use infrastructure::{
     config::AppConfig,
     database,
-    persistence::{PgActivityLogRepository, PgAttachmentRepository, PgNotificationRepository, PgProjectRepository, PgTagRepository, PgTaskRepository, PgTeamRepository, PgTimeLogRepository, PgUserRepository},
+    persistence::{
+        PgActivityLogRepository, PgAttachmentRepository, PgNotificationRepository,
+        PgProjectRepository, PgTagRepository, PgTaskRepository, PgTeamRepository,
+        PgTimeLogRepository, PgUserRepository,
+    },
 };
-use presentation::handlers::{activity_handler, attachment_handler, auth_handler, notification_handler, project_handler, tag_handler, task_handler, team_handler, time_log_handler};
+use presentation::handlers::{
+    activity_handler, attachment_handler, auth_handler, notification_handler, project_handler,
+    tag_handler, task_handler, team_handler, time_log_handler,
+};
 use presentation::middleware::auth_middleware;
 
 #[tokio::main]
@@ -54,9 +64,8 @@ async fn main() {
     let notification_repository = Arc::new(PgNotificationRepository::new(pool.clone()));
 
     // Setup upload directory
-    let upload_dir = PathBuf::from(
-        std::env::var("UPLOAD_DIR").unwrap_or_else(|_| "./uploads".to_string()),
-    );
+    let upload_dir =
+        PathBuf::from(std::env::var("UPLOAD_DIR").unwrap_or_else(|_| "./uploads".to_string()));
     tokio::fs::create_dir_all(&upload_dir)
         .await
         .expect("Failed to create upload directory");
@@ -100,7 +109,17 @@ async fn main() {
         .route("/health", get(health_check))
         .nest(
             "/api/v1",
-            api_routes(auth_service, project_service, task_service, team_service, activity_service, time_log_service, tag_service, attachment_service, notification_service),
+            api_routes(
+                auth_service,
+                project_service,
+                task_service,
+                team_service,
+                activity_service,
+                time_log_service,
+                tag_service,
+                attachment_service,
+                notification_service,
+            ),
         )
         .layer(cors)
         .layer(TraceLayer::new_for_http());
@@ -188,8 +207,14 @@ fn api_routes(
         .route("/time-logs/{id}", get(time_log_handler::get_time_log))
         .route("/time-logs/{id}", put(time_log_handler::update_time_log))
         .route("/time-logs/{id}", delete(time_log_handler::delete_time_log))
-        .route("/tasks/{task_id}/time-logs", get(time_log_handler::list_task_time_logs))
-        .route("/users/{user_id}/time-logs", get(time_log_handler::list_user_time_logs))
+        .route(
+            "/tasks/{task_id}/time-logs",
+            get(time_log_handler::list_task_time_logs),
+        )
+        .route(
+            "/users/{user_id}/time-logs",
+            get(time_log_handler::list_user_time_logs),
+        )
         .layer(middleware::from_fn(auth_middleware))
         .with_state(time_log_service);
 
@@ -202,27 +227,60 @@ fn api_routes(
         .route("/tags/{id}", delete(tag_handler::delete_tag))
         .route("/tasks/{task_id}/tags", get(tag_handler::get_task_tags))
         .route("/tasks/{task_id}/tags", put(tag_handler::set_task_tags))
-        .route("/tasks/{task_id}/tags/{tag_id}", post(tag_handler::add_tag_to_task))
-        .route("/tasks/{task_id}/tags/{tag_id}", delete(tag_handler::remove_tag_from_task))
+        .route(
+            "/tasks/{task_id}/tags/{tag_id}",
+            post(tag_handler::add_tag_to_task),
+        )
+        .route(
+            "/tasks/{task_id}/tags/{tag_id}",
+            delete(tag_handler::remove_tag_from_task),
+        )
         .layer(middleware::from_fn(auth_middleware))
         .with_state(tag_service);
 
     // Protected attachment routes
     let attachment_routes = Router::new()
-        .route("/tasks/{task_id}/attachments", get(attachment_handler::get_task_attachments))
-        .route("/tasks/{task_id}/attachments", post(attachment_handler::upload_attachment))
-        .route("/attachments/{id}", get(attachment_handler::download_attachment))
-        .route("/attachments/{id}", delete(attachment_handler::delete_attachment))
+        .route(
+            "/tasks/{task_id}/attachments",
+            get(attachment_handler::get_task_attachments),
+        )
+        .route(
+            "/tasks/{task_id}/attachments",
+            post(attachment_handler::upload_attachment),
+        )
+        .route(
+            "/attachments/{id}",
+            get(attachment_handler::download_attachment),
+        )
+        .route(
+            "/attachments/{id}",
+            delete(attachment_handler::delete_attachment),
+        )
         .layer(middleware::from_fn(auth_middleware))
         .with_state(attachment_service);
 
     // Protected notification routes
     let notification_routes = Router::new()
-        .route("/notifications", get(notification_handler::list_notifications))
-        .route("/notifications/unread-count", get(notification_handler::get_unread_count))
-        .route("/notifications/{id}/read", put(notification_handler::mark_as_read))
-        .route("/notifications/read-all", put(notification_handler::mark_all_as_read))
-        .route("/notifications/{id}", delete(notification_handler::delete_notification))
+        .route(
+            "/notifications",
+            get(notification_handler::list_notifications),
+        )
+        .route(
+            "/notifications/unread-count",
+            get(notification_handler::get_unread_count),
+        )
+        .route(
+            "/notifications/{id}/read",
+            put(notification_handler::mark_as_read),
+        )
+        .route(
+            "/notifications/read-all",
+            put(notification_handler::mark_all_as_read),
+        )
+        .route(
+            "/notifications/{id}",
+            delete(notification_handler::delete_notification),
+        )
         .layer(middleware::from_fn(auth_middleware))
         .with_state(notification_service);
 

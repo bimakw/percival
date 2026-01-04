@@ -115,13 +115,12 @@ impl TeamRepository for PgTeamRepository {
     }
 
     async fn is_lead(&self, team_id: Uuid, user_id: Uuid) -> Result<bool, DomainError> {
-        let result: Option<(i64,)> = sqlx::query_as(
-            "SELECT 1 FROM teams WHERE id = $1 AND lead_id = $2 LIMIT 1",
-        )
-        .bind(team_id)
-        .bind(user_id)
-        .fetch_optional(&self.pool)
-        .await?;
+        let result: Option<(i64,)> =
+            sqlx::query_as("SELECT 1 FROM teams WHERE id = $1 AND lead_id = $2 LIMIT 1")
+                .bind(team_id)
+                .bind(user_id)
+                .fetch_optional(&self.pool)
+                .await?;
 
         Ok(result.is_some())
     }

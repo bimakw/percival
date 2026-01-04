@@ -56,7 +56,10 @@ impl Project {
     }
 
     pub fn can_add_tasks(&self) -> bool {
-        !matches!(self.status, ProjectStatus::Completed | ProjectStatus::Cancelled)
+        !matches!(
+            self.status,
+            ProjectStatus::Completed | ProjectStatus::Cancelled
+        )
     }
 
     pub fn update_status(&mut self, status: ProjectStatus) {

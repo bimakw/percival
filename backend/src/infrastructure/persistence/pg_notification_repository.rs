@@ -33,7 +33,10 @@ impl From<NotificationRow> for Notification {
         Notification {
             id: row.id,
             user_id: row.user_id,
-            notification_type: row.notification_type.parse().unwrap_or(NotificationType::System),
+            notification_type: row
+                .notification_type
+                .parse()
+                .unwrap_or(NotificationType::System),
             title: row.title,
             message: row.message,
             link: row.link,

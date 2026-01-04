@@ -1,5 +1,5 @@
-use std::sync::Arc;
 use chrono::{NaiveDate, Utc};
+use std::sync::Arc;
 use uuid::Uuid;
 
 use crate::domain::entities::TimeLog;
@@ -28,7 +28,9 @@ pub struct TimeLogAppService {
 
 impl TimeLogAppService {
     pub fn new(time_log_repository: Arc<dyn TimeLogRepository>) -> Self {
-        Self { time_log_repository }
+        Self {
+            time_log_repository,
+        }
     }
 
     pub async fn get_time_log(&self, id: Uuid) -> Result<Option<TimeLog>, DomainError> {
@@ -41,7 +43,9 @@ impl TimeLogAppService {
         start_date: Option<NaiveDate>,
         end_date: Option<NaiveDate>,
     ) -> Result<Vec<TimeLog>, DomainError> {
-        self.time_log_repository.find_by_user(user_id, start_date, end_date).await
+        self.time_log_repository
+            .find_by_user(user_id, start_date, end_date)
+            .await
     }
 
     pub async fn get_task_time_logs(&self, task_id: Uuid) -> Result<Vec<TimeLog>, DomainError> {
@@ -54,7 +58,9 @@ impl TimeLogAppService {
         start_date: NaiveDate,
         end_date: NaiveDate,
     ) -> Result<Vec<TimeLog>, DomainError> {
-        self.time_log_repository.find_by_date_range(user_id, start_date, end_date).await
+        self.time_log_repository
+            .find_by_date_range(user_id, start_date, end_date)
+            .await
     }
 
     pub async fn create_time_log(&self, dto: CreateTimeLogDto) -> Result<TimeLog, DomainError> {
@@ -81,7 +87,8 @@ impl TimeLogAppService {
         id: Uuid,
         dto: UpdateTimeLogDto,
     ) -> Result<TimeLog, DomainError> {
-        let existing = self.time_log_repository
+        let existing = self
+            .time_log_repository
             .find_by_id(id)
             .await?
             .ok_or_else(|| DomainError::NotFound(format!("Time log with id {} not found", id)))?;

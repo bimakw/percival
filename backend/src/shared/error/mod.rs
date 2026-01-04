@@ -48,17 +48,23 @@ impl IntoResponse for DomainError {
                 (StatusCode::BAD_REQUEST, "VALIDATION_ERROR", msg.clone())
             }
             DomainError::NotFound(msg) => (StatusCode::NOT_FOUND, "NOT_FOUND", msg.clone()),
-            DomainError::AlreadyExists(msg) => (StatusCode::CONFLICT, "ALREADY_EXISTS", msg.clone()),
+            DomainError::AlreadyExists(msg) => {
+                (StatusCode::CONFLICT, "ALREADY_EXISTS", msg.clone())
+            }
             DomainError::Unauthorized(msg) => {
                 (StatusCode::UNAUTHORIZED, "UNAUTHORIZED", msg.clone())
             }
             DomainError::Forbidden(msg) => (StatusCode::FORBIDDEN, "FORBIDDEN", msg.clone()),
-            DomainError::InternalError(msg) => {
-                (StatusCode::INTERNAL_SERVER_ERROR, "INTERNAL_ERROR", msg.clone())
-            }
-            DomainError::DatabaseError(msg) => {
-                (StatusCode::INTERNAL_SERVER_ERROR, "DATABASE_ERROR", msg.clone())
-            }
+            DomainError::InternalError(msg) => (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                "INTERNAL_ERROR",
+                msg.clone(),
+            ),
+            DomainError::DatabaseError(msg) => (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                "DATABASE_ERROR",
+                msg.clone(),
+            ),
         };
 
         let body = Json(ErrorResponse {

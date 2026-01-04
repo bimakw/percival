@@ -34,7 +34,9 @@ pub async fn get_task(
     // Check access permission (admin can access all)
     if auth_user.role != UserRole::Admin {
         if !service.can_user_access(id, auth_user.id).await? {
-            return Err(DomainError::Forbidden("You don't have access to this task".into()));
+            return Err(DomainError::Forbidden(
+                "You don't have access to this task".into(),
+            ));
         }
     }
     let task = service.get_task(id).await?;
@@ -48,8 +50,13 @@ pub async fn create_task(
 ) -> Result<Json<ApiResponse<Task>>, DomainError> {
     // Check access to project (admin can access all)
     if auth_user.role != UserRole::Admin {
-        if !service.can_access_project(cmd.project_id, auth_user.id).await? {
-            return Err(DomainError::Forbidden("You don't have access to this project".into()));
+        if !service
+            .can_access_project(cmd.project_id, auth_user.id)
+            .await?
+        {
+            return Err(DomainError::Forbidden(
+                "You don't have access to this project".into(),
+            ));
         }
     }
 
@@ -71,7 +78,9 @@ pub async fn update_task(
     // Check access permission (admin can access all)
     if auth_user.role != UserRole::Admin {
         if !service.can_user_access(id, auth_user.id).await? {
-            return Err(DomainError::Forbidden("You don't have access to this task".into()));
+            return Err(DomainError::Forbidden(
+                "You don't have access to this task".into(),
+            ));
         }
     }
 
@@ -92,7 +101,9 @@ pub async fn delete_task(
     // Only project owner or admin can delete tasks
     if auth_user.role != UserRole::Admin {
         if !service.is_project_owner(id, auth_user.id).await? {
-            return Err(DomainError::Forbidden("Only project owner can delete tasks".into()));
+            return Err(DomainError::Forbidden(
+                "Only project owner can delete tasks".into(),
+            ));
         }
     }
 

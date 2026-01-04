@@ -30,7 +30,12 @@ impl Tag {
         }
     }
 
-    pub fn update(&mut self, name: Option<String>, color: Option<String>, description: Option<String>) {
+    pub fn update(
+        &mut self,
+        name: Option<String>,
+        color: Option<String>,
+        description: Option<String>,
+    ) {
         if let Some(n) = name {
             self.name = n;
         }

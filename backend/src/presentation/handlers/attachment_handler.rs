@@ -80,9 +80,9 @@ pub async fn download_attachment(
     let attachment = service.get_attachment(id).await?;
     let file_path = service.get_file_path(id).await?;
 
-    let file = tokio::fs::File::open(&file_path).await.map_err(|e| {
-        DomainError::InternalError(format!("Failed to open file: {}", e))
-    })?;
+    let file = tokio::fs::File::open(&file_path)
+        .await
+        .map_err(|e| DomainError::InternalError(format!("Failed to open file: {}", e)))?;
 
     let stream = ReaderStream::new(file);
     let body = Body::from_stream(stream);

@@ -78,7 +78,11 @@ impl PgActivityLogRepository {
 
 #[async_trait]
 impl ActivityLogRepository for PgActivityLogRepository {
-    async fn find_all(&self, limit: i64, offset: i64) -> Result<Vec<ActivityLogWithDetails>, DomainError> {
+    async fn find_all(
+        &self,
+        limit: i64,
+        offset: i64,
+    ) -> Result<Vec<ActivityLogWithDetails>, DomainError> {
         let rows = sqlx::query_as::<_, ActivityLogWithDetailsRow>(
             r#"
             SELECT
@@ -107,7 +111,11 @@ impl ActivityLogRepository for PgActivityLogRepository {
         Ok(rows.into_iter().map(Into::into).collect())
     }
 
-    async fn find_by_project(&self, project_id: Uuid, limit: i64) -> Result<Vec<ActivityLogWithDetails>, DomainError> {
+    async fn find_by_project(
+        &self,
+        project_id: Uuid,
+        limit: i64,
+    ) -> Result<Vec<ActivityLogWithDetails>, DomainError> {
         let rows = sqlx::query_as::<_, ActivityLogWithDetailsRow>(
             r#"
             SELECT
@@ -137,7 +145,11 @@ impl ActivityLogRepository for PgActivityLogRepository {
         Ok(rows.into_iter().map(Into::into).collect())
     }
 
-    async fn find_by_user(&self, user_id: Uuid, limit: i64) -> Result<Vec<ActivityLogWithDetails>, DomainError> {
+    async fn find_by_user(
+        &self,
+        user_id: Uuid,
+        limit: i64,
+    ) -> Result<Vec<ActivityLogWithDetails>, DomainError> {
         let rows = sqlx::query_as::<_, ActivityLogWithDetailsRow>(
             r#"
             SELECT

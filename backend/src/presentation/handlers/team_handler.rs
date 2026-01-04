@@ -34,7 +34,9 @@ pub async fn get_team(
     // Check access permission (admin can access all)
     if auth_user.role != UserRole::Admin {
         if !service.can_user_access(id, auth_user.id).await? {
-            return Err(DomainError::Forbidden("You don't have access to this team".into()));
+            return Err(DomainError::Forbidden(
+                "You don't have access to this team".into(),
+            ));
         }
     }
     let team = service.get_team(id).await?;
@@ -63,7 +65,9 @@ pub async fn update_team(
     // Only lead or admin can update team
     if auth_user.role != UserRole::Admin {
         if !service.is_lead(id, auth_user.id).await? {
-            return Err(DomainError::Forbidden("Only team lead can update this team".into()));
+            return Err(DomainError::Forbidden(
+                "Only team lead can update this team".into(),
+            ));
         }
     }
 
@@ -84,7 +88,9 @@ pub async fn delete_team(
     // Only lead or admin can delete team
     if auth_user.role != UserRole::Admin {
         if !service.is_lead(id, auth_user.id).await? {
-            return Err(DomainError::Forbidden("Only team lead can delete this team".into()));
+            return Err(DomainError::Forbidden(
+                "Only team lead can delete this team".into(),
+            ));
         }
     }
 
@@ -105,7 +111,9 @@ pub async fn get_team_members(
     // Check access permission (admin can access all)
     if auth_user.role != UserRole::Admin {
         if !service.can_user_access(id, auth_user.id).await? {
-            return Err(DomainError::Forbidden("You don't have access to this team".into()));
+            return Err(DomainError::Forbidden(
+                "You don't have access to this team".into(),
+            ));
         }
     }
     let members = service.get_team_members(id).await?;
@@ -121,7 +129,9 @@ pub async fn add_team_member(
     // Only lead or admin can add team members
     if auth_user.role != UserRole::Admin {
         if !service.is_lead(team_id, auth_user.id).await? {
-            return Err(DomainError::Forbidden("Only team lead can add members".into()));
+            return Err(DomainError::Forbidden(
+                "Only team lead can add members".into(),
+            ));
         }
     }
 

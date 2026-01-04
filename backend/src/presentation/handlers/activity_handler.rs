@@ -24,7 +24,9 @@ pub async fn list_activities(
     Query(query): Query<ListActivitiesQuery>,
 ) -> Result<Json<ApiResponse<Vec<ActivityLogWithDetails>>>, DomainError> {
     let activities = if let Some(project_id) = query.project_id {
-        service.get_activities_by_project(project_id, query.limit).await?
+        service
+            .get_activities_by_project(project_id, query.limit)
+            .await?
     } else if let Some(user_id) = query.user_id {
         service.get_activities_by_user(user_id, query.limit).await?
     } else {

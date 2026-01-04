@@ -16,12 +16,20 @@ impl NotificationAppService {
         }
     }
 
-    pub async fn get_user_notifications(&self, user_id: Uuid) -> Result<Vec<Notification>, DomainError> {
+    pub async fn get_user_notifications(
+        &self,
+        user_id: Uuid,
+    ) -> Result<Vec<Notification>, DomainError> {
         self.notification_repository.find_by_user(user_id).await
     }
 
-    pub async fn get_unread_notifications(&self, user_id: Uuid) -> Result<Vec<Notification>, DomainError> {
-        self.notification_repository.find_unread_by_user(user_id).await
+    pub async fn get_unread_notifications(
+        &self,
+        user_id: Uuid,
+    ) -> Result<Vec<Notification>, DomainError> {
+        self.notification_repository
+            .find_unread_by_user(user_id)
+            .await
     }
 
     pub async fn get_unread_count(&self, user_id: Uuid) -> Result<i64, DomainError> {
@@ -44,10 +52,10 @@ impl NotificationAppService {
         // Verify the notification belongs to the user
         let notification = self.notification_repository.find_by_id(id).await?;
         match notification {
-            Some(n) if n.user_id == user_id => {
-                self.notification_repository.mark_as_read(id).await
-            }
-            Some(_) => Err(DomainError::Unauthorized("Not authorized to modify this notification".into())),
+            Some(n) if n.user_id == user_id => self.notification_repository.mark_as_read(id).await,
+            Some(_) => Err(DomainError::Unauthorized(
+                "Not authorized to modify this notification".into(),
+            )),
             None => Err(DomainError::NotFound("Notification not found".into())),
         }
     }
@@ -60,10 +68,10 @@ impl NotificationAppService {
         // Verify the notification belongs to the user
         let notification = self.notification_repository.find_by_id(id).await?;
         match notification {
-            Some(n) if n.user_id == user_id => {
-                self.notification_repository.delete(id).await
-            }
-            Some(_) => Err(DomainError::Unauthorized("Not authorized to delete this notification".into())),
+            Some(n) if n.user_id == user_id => self.notification_repository.delete(id).await,
+            Some(_) => Err(DomainError::Unauthorized(
+                "Not authorized to delete this notification".into(),
+            )),
             None => Err(DomainError::NotFound("Notification not found".into())),
         }
     }

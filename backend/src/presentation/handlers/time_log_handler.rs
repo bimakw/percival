@@ -1,14 +1,13 @@
 use axum::{
     extract::{Path, Query, State},
-    Extension,
-    Json,
+    Extension, Json,
 };
 use chrono::NaiveDate;
 use serde::Deserialize;
 use std::sync::Arc;
 use uuid::Uuid;
 
-use crate::application::services::{TimeLogAppService, CreateTimeLogDto, UpdateTimeLogDto};
+use crate::application::services::{CreateTimeLogDto, TimeLogAppService, UpdateTimeLogDto};
 use crate::domain::entities::TimeLog;
 use crate::presentation::dto::ApiResponse;
 use crate::presentation::middleware::AuthUser;
@@ -41,7 +40,9 @@ pub async fn list_my_time_logs(
     Extension(auth_user): Extension<AuthUser>,
     Query(params): Query<ListTimeLogsQuery>,
 ) -> Result<Json<ApiResponse<Vec<TimeLog>>>, DomainError> {
-    let time_logs = service.get_user_time_logs(auth_user.id, params.start_date, params.end_date).await?;
+    let time_logs = service
+        .get_user_time_logs(auth_user.id, params.start_date, params.end_date)
+        .await?;
     Ok(Json(ApiResponse::success(time_logs)))
 }
 
@@ -50,7 +51,8 @@ pub async fn get_time_log(
     State(service): State<Arc<TimeLogAppService>>,
     Path(id): Path<Uuid>,
 ) -> Result<Json<ApiResponse<TimeLog>>, DomainError> {
-    let time_log = service.get_time_log(id)
+    let time_log = service
+        .get_time_log(id)
         .await?
         .ok_or_else(|| DomainError::NotFound(format!("Time log {} not found", id)))?;
     Ok(Json(ApiResponse::success(time_log)))
@@ -71,7 +73,9 @@ pub async fn list_user_time_logs(
     Path(user_id): Path<Uuid>,
     Query(params): Query<ListTimeLogsQuery>,
 ) -> Result<Json<ApiResponse<Vec<TimeLog>>>, DomainError> {
-    let time_logs = service.get_user_time_logs(user_id, params.start_date, params.end_date).await?;
+    let time_logs = service
+        .get_user_time_logs(user_id, params.start_date, params.end_date)
+        .await?;
     Ok(Json(ApiResponse::success(time_logs)))
 }
 

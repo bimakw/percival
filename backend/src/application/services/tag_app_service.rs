@@ -34,7 +34,9 @@ impl TagAppService {
     pub async fn create_tag(&self, cmd: CreateTagCommand) -> Result<Tag, DomainError> {
         // Check if tag with same name already exists
         if let Some(_) = self.tag_repository.find_by_name(&cmd.name).await? {
-            return Err(DomainError::ValidationError("Tag with this name already exists".into()));
+            return Err(DomainError::ValidationError(
+                "Tag with this name already exists".into(),
+            ));
         }
 
         let tag = Tag::new(cmd.name, cmd.color, cmd.description);
@@ -52,7 +54,9 @@ impl TagAppService {
         if let Some(name) = &cmd.name {
             if let Some(existing) = self.tag_repository.find_by_name(name).await? {
                 if existing.id != id {
-                    return Err(DomainError::ValidationError("Tag with this name already exists".into()));
+                    return Err(DomainError::ValidationError(
+                        "Tag with this name already exists".into(),
+                    ));
                 }
             }
         }
@@ -75,7 +79,11 @@ impl TagAppService {
         self.tag_repository.find_tags_by_task(task_id).await
     }
 
-    pub async fn add_tag_to_task(&self, task_id: Uuid, tag_id: Uuid) -> Result<TaskTag, DomainError> {
+    pub async fn add_tag_to_task(
+        &self,
+        task_id: Uuid,
+        tag_id: Uuid,
+    ) -> Result<TaskTag, DomainError> {
         // Verify tag exists
         self.tag_repository
             .find_by_id(tag_id)
@@ -86,11 +94,21 @@ impl TagAppService {
         self.tag_repository.add_tag_to_task(&task_tag).await
     }
 
-    pub async fn remove_tag_from_task(&self, task_id: Uuid, tag_id: Uuid) -> Result<(), DomainError> {
-        self.tag_repository.remove_tag_from_task(task_id, tag_id).await
+    pub async fn remove_tag_from_task(
+        &self,
+        task_id: Uuid,
+        tag_id: Uuid,
+    ) -> Result<(), DomainError> {
+        self.tag_repository
+            .remove_tag_from_task(task_id, tag_id)
+            .await
     }
 
-    pub async fn set_task_tags(&self, task_id: Uuid, tag_ids: Vec<Uuid>) -> Result<Vec<Tag>, DomainError> {
+    pub async fn set_task_tags(
+        &self,
+        task_id: Uuid,
+        tag_ids: Vec<Uuid>,
+    ) -> Result<Vec<Tag>, DomainError> {
         // Verify all tags exist
         for tag_id in &tag_ids {
             self.tag_repository

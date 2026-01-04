@@ -30,13 +30,25 @@ impl TaskAppService {
     }
 
     /// Check if user is owner of the project containing the task
-    pub async fn is_project_owner(&self, task_id: Uuid, user_id: Uuid) -> Result<bool, DomainError> {
-        self.task_repository.is_project_owner(task_id, user_id).await
+    pub async fn is_project_owner(
+        &self,
+        task_id: Uuid,
+        user_id: Uuid,
+    ) -> Result<bool, DomainError> {
+        self.task_repository
+            .is_project_owner(task_id, user_id)
+            .await
     }
 
     /// Check if user can access project (for create task)
-    pub async fn can_access_project(&self, project_id: Uuid, user_id: Uuid) -> Result<bool, DomainError> {
-        self.task_repository.can_access_project(project_id, user_id).await
+    pub async fn can_access_project(
+        &self,
+        project_id: Uuid,
+        user_id: Uuid,
+    ) -> Result<bool, DomainError> {
+        self.task_repository
+            .can_access_project(project_id, user_id)
+            .await
     }
 
     pub async fn get_task(&self, id: Uuid) -> Result<Task, DomainError> {

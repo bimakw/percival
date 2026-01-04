@@ -18,12 +18,7 @@ pub struct User {
 }
 
 impl User {
-    pub fn new(
-        email: Email,
-        password_hash: String,
-        name: String,
-        role: Option<UserRole>,
-    ) -> Self {
+    pub fn new(email: Email, password_hash: String, name: String, role: Option<UserRole>) -> Self {
         let now = Utc::now();
         Self {
             id: Uuid::new_v4(),

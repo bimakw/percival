@@ -52,8 +52,15 @@ impl AuthAppService {
         PasswordValidator::validate(&cmd.password)?;
 
         // Check if user already exists
-        if self.user_repository.find_by_email(email.as_str()).await?.is_some() {
-            return Err(DomainError::AlreadyExists("Email already registered".into()));
+        if self
+            .user_repository
+            .find_by_email(email.as_str())
+            .await?
+            .is_some()
+        {
+            return Err(DomainError::AlreadyExists(
+                "Email already registered".into(),
+            ));
         }
 
         // Hash password
