@@ -41,8 +41,9 @@ export default function NewProjectPage() {
 
       await projectsApi.create(payload);
       router.push('/projects');
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to create project');
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } } };
+      setError(error.response?.data?.message || 'Failed to create project');
     } finally {
       setLoading(false);
     }
