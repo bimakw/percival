@@ -32,9 +32,7 @@ pub async fn get_project(
     Path(id): Path<Uuid>,
 ) -> Result<Json<ApiResponse<Project>>, DomainError> {
     // Check access permission (admin can access all)
-    if auth_user.role != UserRole::Admin
-        && !service.can_user_access(id, auth_user.id).await?
-    {
+    if auth_user.role != UserRole::Admin && !service.can_user_access(id, auth_user.id).await? {
         return Err(DomainError::Forbidden(
             "You don't have access to this project".into(),
         ));
@@ -64,9 +62,7 @@ pub async fn update_project(
     Json(cmd): Json<UpdateProjectCommand>,
 ) -> Result<Json<ApiResponse<Project>>, DomainError> {
     // Only owner or admin can update project
-    if auth_user.role != UserRole::Admin
-        && !service.is_owner(id, auth_user.id).await?
-    {
+    if auth_user.role != UserRole::Admin && !service.is_owner(id, auth_user.id).await? {
         return Err(DomainError::Forbidden(
             "Only project owner can update this project".into(),
         ));
@@ -87,9 +83,7 @@ pub async fn delete_project(
     Path(id): Path<Uuid>,
 ) -> Result<Json<ApiResponse<()>>, DomainError> {
     // Only owner or admin can delete project
-    if auth_user.role != UserRole::Admin
-        && !service.is_owner(id, auth_user.id).await?
-    {
+    if auth_user.role != UserRole::Admin && !service.is_owner(id, auth_user.id).await? {
         return Err(DomainError::Forbidden(
             "Only project owner can delete this project".into(),
         ));
@@ -110,9 +104,7 @@ pub async fn get_project_tasks(
     Path(id): Path<Uuid>,
 ) -> Result<Json<ApiResponse<Vec<Task>>>, DomainError> {
     // Check access permission (admin can access all)
-    if auth_user.role != UserRole::Admin
-        && !service.can_user_access(id, auth_user.id).await?
-    {
+    if auth_user.role != UserRole::Admin && !service.can_user_access(id, auth_user.id).await? {
         return Err(DomainError::Forbidden(
             "You don't have access to this project".into(),
         ));
@@ -127,9 +119,7 @@ pub async fn get_project_milestones(
     Path(id): Path<Uuid>,
 ) -> Result<Json<ApiResponse<Vec<Milestone>>>, DomainError> {
     // Check access permission (admin can access all)
-    if auth_user.role != UserRole::Admin
-        && !service.can_user_access(id, auth_user.id).await?
-    {
+    if auth_user.role != UserRole::Admin && !service.can_user_access(id, auth_user.id).await? {
         return Err(DomainError::Forbidden(
             "You don't have access to this project".into(),
         ));
