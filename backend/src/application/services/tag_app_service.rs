@@ -33,7 +33,7 @@ impl TagAppService {
 
     pub async fn create_tag(&self, cmd: CreateTagCommand) -> Result<Tag, DomainError> {
         // Check if tag with same name already exists
-        if let Some(_) = self.tag_repository.find_by_name(&cmd.name).await? {
+        if self.tag_repository.find_by_name(&cmd.name).await?.is_some() {
             return Err(DomainError::ValidationError(
                 "Tag with this name already exists".into(),
             ));
