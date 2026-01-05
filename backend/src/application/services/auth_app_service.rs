@@ -11,7 +11,7 @@ use crate::domain::services::AuthService;
 use crate::domain::value_objects::{Email, PasswordValidator, UserRole};
 use crate::shared::DomainError;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Claims {
     pub sub: Uuid,
     pub email: String,
