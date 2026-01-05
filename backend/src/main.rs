@@ -1,3 +1,6 @@
+#![allow(dead_code)]
+#![allow(unused_imports)]
+
 use axum::{
     middleware,
     routing::{delete, get, post, put},
@@ -137,6 +140,7 @@ async fn health_check() -> &'static str {
     "PMO Backend is running!"
 }
 
+#[allow(clippy::too_many_arguments)]
 fn api_routes(
     auth_service: Arc<AuthAppService>,
     project_service: Arc<ProjectAppService>,
