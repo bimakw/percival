@@ -6,9 +6,10 @@ WORKDIR /app
 # Copy manifests
 COPY Cargo.toml Cargo.lock* ./
 
-# Create dummy src to cache dependencies
+# Create dummy src to cache dependencies (both main.rs and lib.rs)
 RUN mkdir src && \
     echo "fn main() {}" > src/main.rs && \
+    touch src/lib.rs && \
     cargo build --release && \
     rm -rf src
 
