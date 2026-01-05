@@ -32,12 +32,12 @@ pub async fn get_task(
     Path(id): Path<Uuid>,
 ) -> Result<Json<ApiResponse<Task>>, DomainError> {
     // Check access permission (admin can access all)
-    if auth_user.role != UserRole::Admin {
-        if !service.can_user_access(id, auth_user.id).await? {
-            return Err(DomainError::Forbidden(
-                "You don't have access to this task".into(),
-            ));
-        }
+    if auth_user.role != UserRole::Admin
+        && !service.can_user_access(id, auth_user.id).await?
+    {
+        return Err(DomainError::Forbidden(
+            "You don't have access to this task".into(),
+        ));
     }
     let task = service.get_task(id).await?;
     Ok(Json(ApiResponse::success(task)))
@@ -49,15 +49,14 @@ pub async fn create_task(
     Json(cmd): Json<CreateTaskCommand>,
 ) -> Result<Json<ApiResponse<Task>>, DomainError> {
     // Check access to project (admin can access all)
-    if auth_user.role != UserRole::Admin {
-        if !service
+    if auth_user.role != UserRole::Admin
+        && !service
             .can_access_project(cmd.project_id, auth_user.id)
             .await?
-        {
-            return Err(DomainError::Forbidden(
-                "You don't have access to this project".into(),
-            ));
-        }
+    {
+        return Err(DomainError::Forbidden(
+            "You don't have access to this project".into(),
+        ));
     }
 
     tracing::info!(
@@ -76,12 +75,12 @@ pub async fn update_task(
     Json(cmd): Json<UpdateTaskCommand>,
 ) -> Result<Json<ApiResponse<Task>>, DomainError> {
     // Check access permission (admin can access all)
-    if auth_user.role != UserRole::Admin {
-        if !service.can_user_access(id, auth_user.id).await? {
-            return Err(DomainError::Forbidden(
-                "You don't have access to this task".into(),
-            ));
-        }
+    if auth_user.role != UserRole::Admin
+        && !service.can_user_access(id, auth_user.id).await?
+    {
+        return Err(DomainError::Forbidden(
+            "You don't have access to this task".into(),
+        ));
     }
 
     tracing::info!(
@@ -99,12 +98,12 @@ pub async fn delete_task(
     Path(id): Path<Uuid>,
 ) -> Result<Json<ApiResponse<()>>, DomainError> {
     // Only project owner or admin can delete tasks
-    if auth_user.role != UserRole::Admin {
-        if !service.is_project_owner(id, auth_user.id).await? {
-            return Err(DomainError::Forbidden(
-                "Only project owner can delete tasks".into(),
-            ));
-        }
+    if auth_user.role != UserRole::Admin
+        && !service.is_project_owner(id, auth_user.id).await?
+    {
+        return Err(DomainError::Forbidden(
+            "Only project owner can delete tasks".into(),
+        ));
     }
 
     tracing::info!(

@@ -32,12 +32,12 @@ pub async fn get_team(
     Path(id): Path<Uuid>,
 ) -> Result<Json<ApiResponse<Team>>, DomainError> {
     // Check access permission (admin can access all)
-    if auth_user.role != UserRole::Admin {
-        if !service.can_user_access(id, auth_user.id).await? {
-            return Err(DomainError::Forbidden(
-                "You don't have access to this team".into(),
-            ));
-        }
+    if auth_user.role != UserRole::Admin
+        && !service.can_user_access(id, auth_user.id).await?
+    {
+        return Err(DomainError::Forbidden(
+            "You don't have access to this team".into(),
+        ));
     }
     let team = service.get_team(id).await?;
     Ok(Json(ApiResponse::success(team)))
@@ -63,12 +63,12 @@ pub async fn update_team(
     Json(cmd): Json<UpdateTeamCommand>,
 ) -> Result<Json<ApiResponse<Team>>, DomainError> {
     // Only lead or admin can update team
-    if auth_user.role != UserRole::Admin {
-        if !service.is_lead(id, auth_user.id).await? {
-            return Err(DomainError::Forbidden(
-                "Only team lead can update this team".into(),
-            ));
-        }
+    if auth_user.role != UserRole::Admin
+        && !service.is_lead(id, auth_user.id).await?
+    {
+        return Err(DomainError::Forbidden(
+            "Only team lead can update this team".into(),
+        ));
     }
 
     tracing::info!(
@@ -86,12 +86,12 @@ pub async fn delete_team(
     Path(id): Path<Uuid>,
 ) -> Result<Json<ApiResponse<()>>, DomainError> {
     // Only lead or admin can delete team
-    if auth_user.role != UserRole::Admin {
-        if !service.is_lead(id, auth_user.id).await? {
-            return Err(DomainError::Forbidden(
-                "Only team lead can delete this team".into(),
-            ));
-        }
+    if auth_user.role != UserRole::Admin
+        && !service.is_lead(id, auth_user.id).await?
+    {
+        return Err(DomainError::Forbidden(
+            "Only team lead can delete this team".into(),
+        ));
     }
 
     tracing::info!(
@@ -109,12 +109,12 @@ pub async fn get_team_members(
     Path(id): Path<Uuid>,
 ) -> Result<Json<ApiResponse<Vec<TeamMember>>>, DomainError> {
     // Check access permission (admin can access all)
-    if auth_user.role != UserRole::Admin {
-        if !service.can_user_access(id, auth_user.id).await? {
-            return Err(DomainError::Forbidden(
-                "You don't have access to this team".into(),
-            ));
-        }
+    if auth_user.role != UserRole::Admin
+        && !service.can_user_access(id, auth_user.id).await?
+    {
+        return Err(DomainError::Forbidden(
+            "You don't have access to this team".into(),
+        ));
     }
     let members = service.get_team_members(id).await?;
     Ok(Json(ApiResponse::success(members)))
@@ -127,12 +127,12 @@ pub async fn add_team_member(
     Json(cmd): Json<AddTeamMemberCommand>,
 ) -> Result<Json<ApiResponse<TeamMember>>, DomainError> {
     // Only lead or admin can add team members
-    if auth_user.role != UserRole::Admin {
-        if !service.is_lead(team_id, auth_user.id).await? {
-            return Err(DomainError::Forbidden(
-                "Only team lead can add members".into(),
-            ));
-        }
+    if auth_user.role != UserRole::Admin
+        && !service.is_lead(team_id, auth_user.id).await?
+    {
+        return Err(DomainError::Forbidden(
+            "Only team lead can add members".into(),
+        ));
     }
 
     tracing::info!(
